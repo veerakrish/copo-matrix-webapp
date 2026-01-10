@@ -16,10 +16,10 @@ services:
 
   - type: web
     name: copo-matrix-frontend
-    env: static
+    env: node
     plan: free
     buildCommand: cd client && npm install && npm run build
-    staticPublishPath: client/dist
+    startCommand: npx serve -s client/dist -l 3000
     envVars:
       - key: VITE_API_URL
         sync: false
