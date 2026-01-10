@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: copo-matrix-backend
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm run server
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5001
+      - key: MISTRALAI_API_KEY
+        sync: false
+    healthCheckPath: /api/po-data
+

@@ -1,0 +1,335 @@
+{
+    "PO 1": {
+      "description": "Engineering Knowledge - Apply the knowledge of mathematics, science, engineering fundamentals, and an engineering specialization in computer science for the solution of complex engineering problems.",
+      "competencies": [
+        {
+          "code": "1.1",
+          "description": "Demonstrate competence in mathematical modelling",
+          "performance_indicators": [
+            "1.1.1: Apply mathematical techniques such as discrete mathematics, linear algebra, calculus, and statistics to solve computational and engineering problems",
+            "1.1.2: Apply advanced mathematical techniques including probability, queuing theory, and numerical methods to model computer engineering problems"
+          ]
+        },
+        {
+          "code": "1.2",
+          "description": "Demonstrate competence in basic sciences",
+          "performance_indicators": [
+            "1.2.1: Apply laws of natural science and physics to engineering problems related to computing systems"
+          ]
+        },
+        {
+          "code": "1.3",
+          "description": "Demonstrate competence in engineering fundamentals",
+          "performance_indicators": [
+            "1.3.1: Apply fundamental engineering concepts including digital logic, circuit design, and computer architecture"
+          ]
+        },
+        {
+          "code": "1.4",
+          "description": "Demonstrate competence in specialized engineering knowledge",
+          "performance_indicators": [
+            "1.4.1: Apply computer science principles, programming paradigms, algorithms, and data structures",
+            "1.4.2: Apply domain-specific knowledge in software engineering, databases, and networking"
+          ]
+        }
+      ]
+    },
+    "PO 2": {
+      "description": "Problem Analysis - Identify, formulate, review research literature, and analyze complex engineering problems reaching substantiated conclusions using first principles of mathematics, natural sciences, and engineering sciences.",
+      "competencies": [
+        {
+          "code": "2.1",
+          "description": "Demonstrate ability to identify and formulate complex engineering problems",
+          "performance_indicators": [
+            "2.1.1: Articulate problem statements, identify objectives, and scope of computational problems",
+            "2.1.2: Identify computing systems, variables, parameters, constraints, and dependencies"
+          ]
+        },
+        {
+          "code": "2.2",
+          "description": "Demonstrate ability to formulate solution plan and methodology",
+          "performance_indicators": [
+            "2.2.1: Reframe complex problems into interconnected sub-problems or modular components",
+            "2.2.2: Identify, assemble, and evaluate information, resources, and existing algorithms",
+            "2.2.3: Compare and contrast alternative computational approaches to select optimal methodology",
+            "2.2.4: Identify existing computational methods and design patterns"
+          ]
+        },
+        {
+          "code": "2.3",
+          "description": "Demonstrate ability to execute solution process and analyze results",
+          "performance_indicators": [
+            "2.3.1: Apply computational methods and algorithms to solve mathematical and logical models",
+            "2.3.2: Produce and validate results using contemporary computing tools and testing frameworks",
+            "2.3.3: Identify sources of error, algorithm complexity, and solution limitations"
+          ]
+        },
+        {
+          "code": "2.4",
+          "description": "Demonstrate ability to validate problem solutions using research-based approaches",
+          "performance_indicators": [
+            "2.4.1: Conduct literature reviews, compare existing solutions, and justify chosen approach"
+          ]
+        }
+      ]
+    },
+    "PO 3": {
+      "description": "Design/Development of Solutions - Design solutions for complex engineering problems and design system components or processes that meet specified needs with appropriate consideration for public health, safety, cultural, societal, and environmental considerations.",
+      "competencies": [
+        {
+          "code": "3.1",
+          "description": "Demonstrate ability to define complex engineering problems",
+          "performance_indicators": [
+            "3.1.1: Define open-ended computational problems, requirements specifications, and constraints",
+            "3.1.2: Identify stakeholder needs and translate them into technical requirements"
+          ]
+        },
+        {
+          "code": "3.2",
+          "description": "Demonstrate ability to generate diverse design solutions",
+          "performance_indicators": [
+            "3.2.1: Apply formal design methodologies, architectural patterns, and design thinking",
+            "3.2.2: Build prototypes, code modules, or system designs to develop alternative solutions",
+            "3.2.3: Identify functional and non-functional criteria for evaluation"
+          ]
+        },
+        {
+          "code": "3.3",
+          "description": "Demonstrate ability to select optimal designs and advance implementations",
+          "performance_indicators": [
+            "3.3.1: Evaluate designs using performance metrics, resource constraints, and cost-benefit analysis",
+            "3.3.2: Incorporate public safety, data security, privacy, ethical, and environmental considerations"
+          ]
+        },
+        {
+          "code": "3.4",
+          "description": "Apply responsible design principles including accessibility and inclusion",
+          "performance_indicators": [
+            "3.4.1: Design systems considering diverse user needs and accessibility standards"
+          ]
+        }
+      ]
+    },
+    "PO 4": {
+      "description": "Conduct Investigations of Complex Problems - Use research-based knowledge and research methods including design of experiments, analysis and interpretation of data, and synthesis of information to provide valid conclusions.",
+      "competencies": [
+        {
+          "code": "4.1",
+          "description": "Design and conduct experiments",
+          "performance_indicators": [
+            "4.1.1: Design systematic experimental approaches with defined variables and success metrics",
+            "4.1.2: Establish hypothesis, design experimental variables, and define success metrics"
+          ]
+        },
+        {
+          "code": "4.2",
+          "description": "Collect and analyze data",
+          "performance_indicators": [
+            "4.2.1: Execute experiments using appropriate tools and statistical methods"
+          ]
+        },
+        {
+          "code": "4.3",
+          "description": "Synthesize and interpret results",
+          "performance_indicators": [
+            "4.3.1: Interpret results, synthesize findings, and identify limitations",
+            "4.3.2: Synthesize findings across multiple experiments and document research limitations"
+          ]
+        }
+      ]
+    },
+    "PO 5": {
+      "description": "Modern Tool Usage - Create, select, and apply appropriate techniques, resources, and modern engineering and IT tools including prediction and modeling to complex engineering activities with an understanding of limitations.",
+      "competencies": [
+        {
+          "code": "5.1",
+          "description": "Select appropriate tools",
+          "performance_indicators": [
+            "5.1.1: Evaluate and select suitable programming languages, frameworks, and tools"
+          ]
+        },
+        {
+          "code": "5.2",
+          "description": "Apply tools effectively",
+          "performance_indicators": [
+            "5.2.1: Apply modern IDEs, version control, collaborative tools, and simulation tools"
+          ]
+        },
+        {
+          "code": "5.3",
+          "description": "Understand tool limitations",
+          "performance_indicators": [
+            "5.3.1: Understand limitations, scalability boundaries, and performance characteristics"
+          ]
+        }
+      ]
+    },
+    "PO 6": {
+      "description": "The Engineer and The World - Apply reasoning informed by contextual knowledge to analyze and evaluate societal, health, safety, legal, cultural and environmental aspects while solving complex engineering problems, and assess their impact on sustainability and professional responsibilities.",
+      "competencies": [
+        {
+          "code": "6.1",
+          "description": "Assess societal, safety, legal contexts",
+          "performance_indicators": [
+            "6.1.1: Identify societal impacts, health/safety implications, and relevant laws in computing"
+          ]
+        },
+        {
+          "code": "6.2",
+          "description": "Make ethical decisions",
+          "performance_indicators": [
+            "6.2.1: Assess and mitigate risks related to privacy, data security, and user protection",
+            "6.2.2: Apply ethical reasoning and consider cultural contexts in design"
+          ]
+        },
+        {
+          "code": "6.3",
+          "description": "Assess and address digital divide and accessibility issues",
+          "performance_indicators": [
+            "6.3.1: Evaluate impact of computing solutions on underrepresented populations"
+          ]
+        },
+        {
+          "code": "6.4",
+          "description": "Understand environmental impact",
+          "performance_indicators": [
+            "6.4.1: Understand environmental impact of computing systems including energy consumption and e-waste"
+          ]
+        },
+        {
+          "code": "6.5",
+          "description": "Apply sustainable practices",
+          "performance_indicators": [
+            "6.5.1: Apply green computing principles and evaluate lifecycle environmental impacts",
+            "6.5.2: Design systems promoting long-term sustainability and resource efficiency"
+          ]
+        }
+      ]
+    },
+    "PO 7": {
+      "description": "Ethics - Apply ethical principles and commit to professional ethics and responsibilities and norms of engineering practice.",
+      "competencies": [
+        {
+          "code": "7.1",
+          "description": "Recognize ethical dilemmas",
+          "performance_indicators": [
+            "7.1.1: Identify unethical conduct and propose ethical alternatives"
+          ]
+        },
+        {
+          "code": "7.2",
+          "description": "Apply professional ethics",
+          "performance_indicators": [
+            "7.2.1: Apply professional codes of ethics (ACM, IEEE-CS, NASSCOM)",
+            "7.2.2: Examine and apply moral/ethical principles to real-world case studies"
+          ]
+        }
+      ]
+    },
+    "PO 8": {
+      "description": "Individual and Team Work - Function effectively as an individual, and as a member or leader in diverse teams, and in multidisciplinary settings.",
+      "competencies": [
+        {
+          "code": "8.1",
+          "description": "Work effectively individually",
+          "performance_indicators": [
+            "8.1.1: Execute tasks with responsibility, initiative, and self-direction"
+          ]
+        },
+        {
+          "code": "8.2",
+          "description": "Function as team member",
+          "performance_indicators": [
+            "8.2.1: Contribute to team goals, respect diverse perspectives, collaborate effectively"
+          ]
+        },
+        {
+          "code": "8.3",
+          "description": "Lead teams",
+          "performance_indicators": [
+            "8.3.1: Guide teams toward objectives, facilitate group decision-making, manage conflict"
+          ]
+        }
+      ]
+    },
+    "PO 9": {
+      "description": "Communication - Communicate effectively on complex engineering activities with engineering community and society at large, comprehend and write reports, make presentations, give and receive clear instructions.",
+      "competencies": [
+        {
+          "code": "9.1",
+          "description": "Comprehend and document",
+          "performance_indicators": [
+            "9.1.1: Read, understand, interpret technical documentation and write clear reports"
+          ]
+        },
+        {
+          "code": "9.2",
+          "description": "Listen, speak, present",
+          "performance_indicators": [
+            "9.2.1: Listen comprehensively and deliver effective presentations to diverse audiences"
+          ]
+        },
+        {
+          "code": "9.3",
+          "description": "Integrate communication modes",
+          "performance_indicators": [
+            "9.3.1: Create diagrams, flowcharts, UML models and use multiple media effectively"
+          ]
+        }
+      ]
+    },
+    "PO 10": {
+      "description": "Project Management and Finance - Demonstrate knowledge and understanding of engineering and management principles and apply these to one's own work, as member and leader in team, to manage projects and in multidisciplinary environments.",
+      "competencies": [
+        {
+          "code": "10.1",
+          "description": "Understand project management",
+          "performance_indicators": [
+            "10.1.1: Understand project planning, scheduling, resource allocation, and risk management"
+          ]
+        },
+        {
+          "code": "10.2",
+          "description": "Apply PM in teams",
+          "performance_indicators": [
+            "10.2.1: Plan project tasks, define milestones, establish timelines"
+          ]
+        },
+        {
+          "code": "10.3",
+          "description": "Manage engineering projects",
+          "performance_indicators": [
+            "10.3.1: Apply quality management practices to ensure deliverables meet specifications",
+            "10.3.2: Manage documentation, version control, and conduct post-project reviews"
+          ]
+        }
+      ]
+    },
+    "PO 11": {
+      "description": "Life Long Learning - Recognize the need for, and have the preparation and ability for: (i) independent and life-long learning, and (ii) adaptability to new and emerging technologies in the broadest context of engineering practice.",
+      "competencies": [
+        {
+          "code": "11.1",
+          "description": "Self-directed learning",
+          "performance_indicators": [
+            "11.1.1: Identifies knowledge gaps and plans learning using MOOCs, documentation, and research papers beyond syllabus."
+          ]
+        },
+        {
+          "code": "11.2",
+          "description": "Adapting to emerging technologies",
+          "performance_indicators": [
+            "11.2.1: Learns and applies new programming languages, frameworks, cloud/AI/quantum tools not explicitly covered in courses"
+          ]
+        },
+        {
+          "code": "11.3",
+          "description": "Continuous professional development",
+          "performance_indicators": [
+            "11.3.1: Participates in hackathons, internships, certifications, or technical communities to keep skills current."
+          ]
+        }
+      ]
+    }
+  }
+  
