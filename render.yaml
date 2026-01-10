@@ -4,7 +4,7 @@ services:
     env: node
     plan: free
     buildCommand: npm install
-    startCommand: npm run server
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
@@ -13,4 +13,14 @@ services:
       - key: MISTRALAI_API_KEY
         sync: false
     healthCheckPath: /api/po-data
+
+  - type: web
+    name: copo-matrix-frontend
+    env: static
+    plan: free
+    buildCommand: cd client && npm install && npm run build
+    staticPublishPath: client/dist
+    envVars:
+      - key: VITE_API_URL
+        sync: false
 

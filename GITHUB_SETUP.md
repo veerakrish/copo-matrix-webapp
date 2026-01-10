@@ -48,6 +48,9 @@ git push -u origin main
 3. Authorize Render to access your repositories
 
 ### 4.2 Deploy Backend Service
+
+⚠️ **IMPORTANT**: The backend runs from the **ROOT directory**, not the `server` folder!
+
 1. Click **"New +"** → **"Web Service"**
 2. Connect your GitHub repository (`copo-matrix-webapp`)
 3. Configure the service:
@@ -55,9 +58,9 @@ git push -u origin main
    - **Environment**: `Node`
    - **Region**: Choose closest to you
    - **Branch**: `main`
-   - **Root Directory**: Leave empty (root)
+   - **Root Directory**: **Leave EMPTY** (this is critical - must be root `/`, not `server`)
    - **Build Command**: `npm install`
-   - **Start Command**: `npm run server`
+   - **Start Command**: `npm start` (this runs `node server/index.js` from root)
 4. Click **"Advanced"** and add Environment Variables:
    - **Key**: `MISTRALAI_API_KEY`
    - **Value**: Your Mistral API key (get from https://console.mistral.ai/)
@@ -111,6 +114,7 @@ If you prefer to use Render for both:
 2. Connect your GitHub repository
 3. Configure:
    - **Name**: `copo-matrix-frontend`
+   - **Root Directory**: **Leave EMPTY** (must be root `/`, not `client`)
    - **Build Command**: `cd client && npm install && npm run build`
    - **Publish Directory**: `client/dist`
 4. Add Environment Variable:

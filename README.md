@@ -116,6 +116,8 @@ copo_new_webapp/
 
 See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
 
+**For Render-specific issues, see [RENDER_DEPLOYMENT.md](./RENDER_DEPLOYMENT.md)**
+
 ### Quick Deploy Options:
 
 **Option 1: Render (Full Stack)**
