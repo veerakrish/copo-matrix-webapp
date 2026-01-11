@@ -342,12 +342,177 @@ function App() {
         {reasoningItems.map((item, idx) => (
           <div key={idx} className="reasoning-item">
             <h3>{item.co} Mappings:</h3>
-            {item.matches.map((match, matchIdx) => (
-              <div key={matchIdx} style={{ marginBottom: '18px', marginLeft: '15px', padding: '15px', background: '#252525', borderRadius: '8px', borderLeft: '3px solid #667eea' }}>
-                <strong style={{ color: '#667eea', fontSize: '1.05em' }}>{item.co} → {match.outcome} ({match.type}) (Level {match.value}):</strong>
-                <p style={{ marginTop: '10px', color: '#d0d0d0', lineHeight: '1.7' }}>{match.reasoning}</p>
-              </div>
-            ))}
+            {item.matches.map((match, matchIdx) => {
+              // Extract qualitative and quantitative info from reasoning
+              const qualitativeMatch = match.reasoning?.match(/Qualitative: ([^Q]+?)(?=\.|Quantitative:|$)/);
+              const quantitativeMatch = match.reasoning?.match(/Quantitative \(Primary\): ([^Q]+?)(?=\.|Qualitative:|$)/);
+              
+              // Extract PI lists and ratio from quantitative justification
+              const ratioMatch = match.reasoning?.match(/aligns with (\d+) out of (\d+) PIs.*?Ratio: (\d+)\/(\d+) = ([\d.]+)%/);
+              const matchedPIsMatch = match.reasoning?.match(/Matched PIs: \[([^\]]+)\]/);
+              const totalPIsMatch = match.reasoning?.match(/Total PIs for [^:]+: \[([^\]]+)\]/);
+              const coverageMatch = match.reasoning?.match(/([\d.]+)% coverage/);
+              
+              // Extract matched PIs from qualitative
+              const qualitativePIsMatch = match.reasoning?.match(/Qualitative: CO aligns with the following Performance Indicators \(PIs\) of [^:]+: ([^.]+)/);
+              
+              const hasQualitativeInfo = qualitativeMatch !== null || qualitativePIsMatch !== null;
+              const hasQuantitativeInfo = quantitativeMatch !== null || ratioMatch !== null;
+              
+              // Extract alignment statement (everything before "Qualitative:" or "Quantitative:")
+              const alignmentStatement = match.reasoning?.split(/Qualitative:|Quantitative/)[0]?.trim() || match.reasoning;
+              
+              // Get matched PIs list
+              const matchedPIsList = matchedPIsMatch ? matchedPIsMatch[1].split(', ').map(p => p.trim()) : 
+                                    (qualitativePIsMatch ? qualitativePIsMatch[1].split(', ').map(p => p.trim()) : []);
+              
+              // Get total PIs list
+              const totalPIsList = totalPIsMatch ? totalPIsMatch[1].split(', ').map(p => p.trim()) : [];
+              
+              // Get ratio info
+              const matchedCount = ratioMatch ? parseInt(ratioMatch[1]) : (matchedPIsList.length > 0 ? matchedPIsList.length : 0);
+              const totalCount = ratioMatch ? parseInt(ratioMatch[2]) : (totalPIsList.length > 0 ? totalPIsList.length : 0);
+              const coveragePercent = coverageMatch ? parseFloat(coverageMatch[1]) : (totalCount > 0 ? (matchedCount / totalCount * 100).toFixed(1) : '0');
+              
+              return (
+                <div key={matchIdx} style={{ marginBottom: '18px', marginLeft: '15px', padding: '15px', background: '#252525', borderRadius: '8px', borderLeft: '3px solid #667eea' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', marginBottom: '10px' }}>
+                    <strong style={{ color: '#667eea', fontSize: '1.05em' }}>{item.co} → {match.outcome} ({match.type}) (Level {match.value})</strong>
+                    {hasQuantitativeInfo && matchedCount > 0 && totalCount > 0 && (
+                      <span style={{ 
+                        padding: '6px 12px', 
+                        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', 
+                        borderRadius: '6px', 
+                        fontSize: '0.9em', 
+                        fontWeight: '600',
+                        color: '#ffffff'
+                      }}>
+                        Ratio: {matchedCount}/{totalCount} PIs ({coveragePercent}%)
+                      </span>
+                    )}
+                  </div>
+                  
+                  {/* Alignment Statement */}
+                  <p style={{ marginTop: '10px', marginBottom: '15px', color: '#e0e0e0', lineHeight: '1.7', fontSize: '1.05em' }}>
+                    {alignmentStatement}
+                  </p>
+                  
+                  {/* Quantitative Justification - PRIMARY (shown first) - Shows ratio clearly */}
+                  {hasQuantitativeInfo && (
+                    <div style={{ marginTop: '12px', padding: '12px', background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%)', borderRadius: '6px', borderLeft: '4px solid #764ba2', border: '2px solid rgba(118, 75, 162, 0.3)' }}>
+                      <strong style={{ color: '#764ba2', fontSize: '0.95em', display: 'block', marginBottom: '8px' }}>📈 Quantitative Justification (PRIMARY - PI Coverage Ratio):</strong>
+                      
+                      {matchedCount > 0 && totalCount > 0 ? (
+                        <div>
+                          <div style={{ marginBottom: '12px', padding: '10px', background: 'rgba(118, 75, 162, 0.15)', borderRadius: '6px', border: '1px solid rgba(118, 75, 162, 0.3)' }}>
+                            <p style={{ margin: '0 0 8px 0', color: '#ffffff', fontSize: '1em', fontWeight: '600' }}>
+                              PI Coverage Ratio: <span style={{ color: '#764ba2', fontSize: '1.1em' }}>{matchedCount} / {totalCount}</span> = <span style={{ color: '#764ba2', fontSize: '1.1em' }}>{coveragePercent}%</span>
+                            </p>
+                            <p style={{ margin: 0, color: '#d0d0d0', fontSize: '0.9em' }}>
+                              Mapping Strength: <strong style={{ color: '#764ba2' }}>Level {match.value}</strong> ({parseFloat(coveragePercent) > 60 ? 'High' : parseFloat(coveragePercent) >= 40 ? 'Medium' : 'Low'})
+                            </p>
+                          </div>
+                          
+                          {matchedPIsList.length > 0 && (
+                            <div style={{ marginBottom: '10px' }}>
+                              <p style={{ margin: '0 0 6px 0', color: '#d0d0d0', fontSize: '0.9em', fontWeight: '500' }}>
+                                Matched PIs ({matchedPIsList.length}):
+                              </p>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                                {matchedPIsList.map((pi, idx) => (
+                                  <span key={idx} style={{
+                                    padding: '4px 10px',
+                                    background: 'rgba(118, 75, 162, 0.25)',
+                                    borderRadius: '4px',
+                                    fontSize: '0.85em',
+                                    color: '#ffffff',
+                                    fontWeight: '500',
+                                    border: '1px solid rgba(118, 75, 162, 0.5)'
+                                  }}>
+                                    {pi}
+                                  </span>
+                                ))}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {totalPIsList.length > 0 && (
+                            <div>
+                              <p style={{ margin: '0 0 6px 0', color: '#d0d0d0', fontSize: '0.9em', fontWeight: '500' }}>
+                                Total PIs for {match.outcome} ({totalPIsList.length}):
+                              </p>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+                                {totalPIsList.map((pi, idx) => {
+                                  const isMatched = matchedPIsList.includes(pi);
+                                  return (
+                                    <span key={idx} style={{
+                                      padding: '4px 10px',
+                                      background: isMatched ? 'rgba(118, 75, 162, 0.25)' : 'rgba(100, 100, 100, 0.15)',
+                                      borderRadius: '4px',
+                                      fontSize: '0.85em',
+                                      color: isMatched ? '#ffffff' : '#888',
+                                      fontWeight: isMatched ? '500' : '400',
+                                      border: `1px solid ${isMatched ? 'rgba(118, 75, 162, 0.5)' : 'rgba(100, 100, 100, 0.3)'}`,
+                                      textDecoration: isMatched ? 'none' : 'none',
+                                      opacity: isMatched ? 1 : 0.7
+                                    }}>
+                                      {pi} {isMatched && '✓'}
+                                    </span>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+                          
+                          {quantitativeMatch && (
+                            <p style={{ marginTop: '10px', margin: 0, color: '#b0b0b0', lineHeight: '1.6', fontSize: '0.9em', fontStyle: 'italic' }}>
+                              {quantitativeMatch[1].split('Matched PIs:')[0].trim()}
+                            </p>
+                          )}
+                        </div>
+                      ) : (
+                        <p style={{ margin: 0, color: '#d0d0d0', lineHeight: '1.6', fontSize: '0.95em' }}>
+                          {quantitativeMatch ? quantitativeMatch[1].trim() : 'PI coverage calculation in progress...'}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                  
+                  {/* Qualitative Justification - Shows list of PIs that CO aligns with */}
+                  {hasQualitativeInfo && (
+                    <div style={{ marginTop: '12px', padding: '12px', background: 'linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%)', borderRadius: '6px', borderLeft: '3px solid #667eea' }}>
+                      <strong style={{ color: '#667eea', fontSize: '0.95em', display: 'block', marginBottom: '8px' }}>📊 Qualitative Justification (List of PIs):</strong>
+                      {matchedPIsList.length > 0 ? (
+                        <div>
+                          <p style={{ margin: '0 0 8px 0', color: '#d0d0d0', lineHeight: '1.6', fontSize: '0.95em' }}>
+                            <strong style={{ color: '#667eea' }}>CO aligns with the following PIs of {match.outcome}:</strong>
+                          </p>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '8px' }}>
+                            {matchedPIsList.map((pi, idx) => (
+                              <span key={idx} style={{
+                                padding: '4px 10px',
+                                background: 'rgba(102, 126, 234, 0.2)',
+                                borderRadius: '4px',
+                                fontSize: '0.85em',
+                                color: '#667eea',
+                                fontWeight: '500',
+                                border: '1px solid rgba(102, 126, 234, 0.4)'
+                              }}>
+                              {pi}
+                            </span>
+                            ))}
+                          </div>
+                        </div>
+                      ) : (
+                        <p style={{ margin: 0, color: '#d0d0d0', lineHeight: '1.6', fontSize: '0.95em' }}>
+                          {qualitativeMatch ? qualitativeMatch[1].trim() : 'CO alignment with PIs identified.'}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>
@@ -638,22 +803,40 @@ function App() {
               </div>
             <div style={{ marginTop: '30px', fontSize: '1em', color: '#b0b0b0', background: '#1f1f1f', padding: '20px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
               <p style={{ marginBottom: '15px', color: '#ffffff', fontWeight: '600', fontSize: '1.1em' }}><strong>Legend:</strong></p>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px', marginBottom: '20px' }}>
                 <p style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <span className="matrix-cell level-3" style={{ display: 'inline-block', padding: '8px 12px', marginRight: '0' }}>3</span>
-                  <span>CO K-level &gt; PO K-level</span>
+                  <span>High (&gt;60% PI coverage)</span>
                 </p>
                 <p style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <span className="matrix-cell level-2" style={{ display: 'inline-block', padding: '8px 12px', marginRight: '0' }}>2</span>
-                  <span>CO K-level = PO K-level</span>
+                  <span>Medium (40-60% PI coverage)</span>
                 </p>
                 <p style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <span className="matrix-cell level-1" style={{ display: 'inline-block', padding: '8px 12px', marginRight: '0' }}>1</span>
-                  <span>CO K-level &lt; PO K-level</span>
+                  <span>Low (&lt;40% PI coverage)</span>
                 </p>
                 <p style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <span className="matrix-cell blank" style={{ display: 'inline-block', padding: '8px 12px', marginRight: '0' }}>-</span>
                   <span>No correlation</span>
+                </p>
+              </div>
+              <div style={{ marginTop: '15px', padding: '15px', background: '#252525', borderRadius: '8px', borderLeft: '3px solid #667eea' }}>
+                <p style={{ marginBottom: '10px', color: '#667eea', fontWeight: '600', fontSize: '1.05em' }}><strong>Mapping Methodology (AICTE Examination Reform Policy):</strong></p>
+                <p style={{ marginBottom: '8px', lineHeight: '1.6' }}>
+                  <strong style={{ color: '#764ba2' }}>Quantitative Approach (Primary - PI Coverage Based):</strong> Mapping strength is determined by Performance Indicator (PI) coverage percentage. 
+                  The CO addresses specific PIs associated with each PO/PSO, and the coverage percentage determines the mapping level:
+                  <ul style={{ marginTop: '8px', marginLeft: '20px', color: '#d0d0d0' }}>
+                    <li><strong>Level 3 (High):</strong> CO addresses &gt;60% of PIs</li>
+                    <li><strong>Level 2 (Medium):</strong> CO addresses 40-60% of PIs</li>
+                    <li><strong>Level 1 (Low):</strong> CO addresses &lt;40% of PIs</li>
+                  </ul>
+                </p>
+                <p style={{ marginBottom: '8px', lineHeight: '1.6' }}>
+                  <strong>Qualitative Validation (Secondary - K-Level Based):</strong> K-level compatibility ensures cognitive alignment between CO and PO/PSO requirements, used as a validation check.
+                </p>
+                <p style={{ marginTop: '10px', fontSize: '0.95em', fontStyle: 'italic', color: '#888' }}>
+                  This approach follows the new NBA pattern and AICTE Examination Reform Policy, using Performance Indicators for transparent, data-driven mapping justification. The matrix values reflect quantitative PI coverage, not K-level comparisons.
                 </p>
               </div>
             </div>

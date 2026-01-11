@@ -5,8 +5,13 @@ A modern web application for generating Course Outcome (CO) to Program Outcome (
 ## ✨ Features
 
 - **Course Input**: Enter course name, code, and multiple Course Outcomes (COs) with K-levels
+- **Quantitative PI Coverage Mapping**: Primary mapping based on Performance Indicator (PI) coverage percentage following AICTE Examination Reform Policy
+  - **Level 3 (High)**: >60% PI coverage
+  - **Level 2 (Medium)**: 40-60% PI coverage
+  - **Level 1 (Low)**: <40% PI coverage
+- **Qualitative K-Level Validation**: Secondary validation using K-level comparison for cognitive alignment
+- **PI List Display**: Clear visualization of which PIs each CO aligns with (qualitative) and coverage ratio (quantitative)
 - **Automatic Mapping**: Intelligent correlation between COs and POs/PSOs based on competency and performance indicator matching
-- **K-Level Comparison**: Automatic calculation of correlation values (3, 2, 1, or blank) based on K-level comparison
 - **Syllabus Integration**: Upload course syllabus (PDF/DOCX/TXT) for enhanced, context-aware justifications
 - **AI-Powered Justifications**: Uses Mistral AI for generating precise, single-sentence justifications
 - **PSO Support**: Includes Program Specific Outcomes (PSO1-PSO3) mapping
@@ -71,12 +76,16 @@ A modern web application for generating Course Outcome (CO) to Program Outcome (
 - **K5**: Evaluate
 - **K6**: Create
 
-## 📊 Correlation Values
+## 📊 Correlation Values (AICTE Examination Reform Policy)
 
-- **3** (Green): CO K-level > PO/PSO K-level (exceeds expectations)
-- **2** (Yellow): CO K-level = PO/PSO K-level (meets expectations)
-- **1** (Red): CO K-level < PO/PSO K-level (partially meets, but still satisfies)
+Mapping strength is determined by **Performance Indicator (PI) coverage percentage** (quantitative approach):
+
+- **3** (High/Green): CO addresses >60% of PIs associated with the PO/PSO
+- **2** (Medium/Yellow): CO addresses 40-60% of PIs associated with the PO/PSO
+- **1** (Low/Red): CO addresses <40% of PIs associated with the PO/PSO
 - **Blank (-)**: No meaningful correlation found
+
+**Note**: The system uses quantitative PI coverage as the primary method, with K-level comparison serving as a validation check to ensure cognitive alignment. This follows the newer NBA pattern and AICTE Examination Reform Policy for transparent, data-driven mapping justification.
 
 ## 🏗️ Technology Stack
 

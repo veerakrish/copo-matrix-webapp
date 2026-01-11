@@ -111,9 +111,61 @@ function findMatchingCompetencies(coText, poData) {
 }
 
 /**
- * Determine CO-PO correlation value based on K-levels
+ * Count total number of Performance Indicators (PIs) for a PO/PSO
  */
-function determineCorrelationValue(coKLevel, poKLevel) {
+function countTotalPIs(outcomeData) {
+  let totalPIs = 0;
+  if (outcomeData && outcomeData.competencies) {
+    for (const competency of Object.values(outcomeData.competencies)) {
+      if (competency.performanceIndicators) {
+        totalPIs += Object.keys(competency.performanceIndicators).length;
+      }
+    }
+  }
+  return totalPIs;
+}
+
+/**
+ * Collect all matched PI IDs from matches array
+ */
+function collectMatchedPIs(matches) {
+  const matchedPIIds = new Set();
+  for (const match of matches) {
+    if (match.matchedPIs && Array.isArray(match.matchedPIs)) {
+      for (const pi of match.matchedPIs) {
+        if (pi.piId) {
+          matchedPIIds.add(pi.piId);
+        }
+      }
+    }
+  }
+  return Array.from(matchedPIIds);
+}
+
+/**
+ * Get all Performance Indicators (PIs) for a PO/PSO with their IDs and descriptions
+ */
+function getAllPIs(outcomeData) {
+  const allPIs = [];
+  if (outcomeData && outcomeData.competencies) {
+    for (const competency of Object.values(outcomeData.competencies)) {
+      if (competency.performanceIndicators) {
+        for (const [piId, piDesc] of Object.entries(competency.performanceIndicators)) {
+          allPIs.push({
+            piId: piId,
+            piDesc: piDesc
+          });
+        }
+      }
+    }
+  }
+  return allPIs;
+}
+
+/**
+ * Determine CO-PO correlation value based on K-levels (Qualitative approach)
+ */
+function determineCorrelationValueQualitative(coKLevel, poKLevel) {
   const coK = kLevelToNumber(coKLevel);
   const poK = kLevelToNumber(poKLevel);
   
@@ -129,46 +181,80 @@ function determineCorrelationValue(coKLevel, poKLevel) {
 }
 
 /**
- * Generate reasoning explanation for a CO-PO/PSO mapping (with syllabus and LLM support)
+ * Determine CO-PO correlation value based on PI coverage (Quantitative approach)
+ * Following AICTE Examination Reform Policy and new NBA pattern
+ * Level 3 (High): >60% of PIs covered
+ * Level 2 (Medium): 40-60% of PIs covered
+ * Level 1 (Low): <40% of PIs covered
  */
-async function generateReasoning(co, outcomeNumber, outcomeData, correlationValue, matches, syllabusData = null) {
+function determineCorrelationValueQuantitative(matchedPICount, totalPICount) {
+  if (totalPICount === 0) {
+    return null;
+  }
+  
+  const coveragePercentage = (matchedPICount / totalPICount) * 100;
+  
+  if (coveragePercentage > 60) {
+    return 3;
+  } else if (coveragePercentage >= 40) {
+    return 2;
+  } else {
+    return 1;
+  }
+}
+
+/**
+ * Determine CO-PO correlation value using both qualitative and quantitative approaches
+ * Priority: Quantitative (PI coverage) takes precedence, but K-level must be compatible
+ */
+function determineCorrelationValue(coKLevel, poKLevel, matches, outcomeData) {
+  // Get total PIs for the outcome
+  const totalPIs = countTotalPIs(outcomeData);
+  
+  // Get matched PIs
+  const matchedPIs = collectMatchedPIs(matches);
+  const matchedPICount = matchedPIs.length;
+  
+  // Calculate quantitative mapping strength based on PI coverage
+  const quantitativeValue = determineCorrelationValueQuantitative(matchedPICount, totalPIs);
+  
+  // Calculate qualitative mapping strength based on K-levels
+  const qualitativeValue = determineCorrelationValueQualitative(coKLevel, poKLevel);
+  
+  // If quantitative approach gives a value, use it (as per new NBA pattern)
+  // But ensure K-level compatibility: CO K-level should not be too low compared to PO K-level
+  if (quantitativeValue !== null) {
+    const coK = kLevelToNumber(coKLevel);
+    const poK = kLevelToNumber(poKLevel);
+    
+    // If CO K-level is significantly lower than PO K-level, reduce the mapping strength
+    // This ensures alignment between cognitive level and PI coverage
+    if (coK < poK - 1 && quantitativeValue > 1) {
+      // If CO is 2+ levels below PO, cap at level 1
+      return 1;
+    } else if (coK < poK && quantitativeValue === 3) {
+      // If CO is below PO but quantitative says 3, reduce to 2
+      return 2;
+    }
+    
+    return quantitativeValue;
+  }
+  
+  // Fallback to qualitative approach if no PIs matched
+  return qualitativeValue;
+}
+
+/**
+ * Generate reasoning explanation for a CO-PO/PSO mapping (with syllabus and LLM support)
+ * Now includes both qualitative (K-level) and quantitative (PI coverage) justifications
+ */
+async function generateReasoning(co, outcomeNumber, outcomeData, correlationValue, matches, syllabusData = null, piCoverageInfo = null, qualitativeValue = null) {
   const coKLevel = kLevelToNumber(co.kLevel);
   const outcomeKLevel = outcomeData.kLevel;
   const outcomeType = outcomeNumber.startsWith('PSO') ? 'PSO' : 'PO';
   
   if (matches.length === 0) {
     return null; // No match, no reasoning
-  }
-  
-  // Try to generate LLM-based justification first
-  try {
-    const llmJustification = await generateLLMJustification(
-      co,
-      outcomeNumber,
-      outcomeData,
-      correlationValue,
-      matches,
-      syllabusData
-    );
-    
-    if (llmJustification) {
-      return llmJustification;
-    }
-  } catch (error) {
-    console.warn(`LLM justification failed for ${co.id}-${outcomeNumber}, falling back to template:`, error.message);
-  }
-  
-  // Fall back to template-based reasoning if LLM is unavailable or fails (also in single sentence)
-  let reason = '';
-  
-  // Find relevant syllabus units if available (for template fallback)
-  let syllabusReference = '';
-  if (syllabusData && syllabusData.units) {
-    const relevantUnits = findRelevantSyllabusContent(co.description, syllabusData);
-    if (relevantUnits.length > 0) {
-      const topUnit = relevantUnits[0].unit;
-      syllabusReference = ` as covered in Unit ${topUnit.number}`;
-    }
   }
   
   // Build competency and PI info with null checks
@@ -181,18 +267,84 @@ async function generateReasoning(co, outcomeNumber, outcomeData, correlationValu
     return null;
   }
   
-  const primaryPI = primaryCompetency.matchedPIs[0];
-  if (!primaryPI || !primaryPI.piId) {
-    return null;
-  }
+  // Collect all matched PIs for display
+  const allMatchedPIs = collectMatchedPIs(matches);
+  const piList = allMatchedPIs.length > 0 ? allMatchedPIs.join(', ') : primaryCompetency.matchedPIs[0].piId;
   
-  // Generate concise format: "CO X aligned with PO Y based on [competency description] (PI reference)"
   const coNumber = co.id.replace('CO', '');
   const competencyDesc = (primaryCompetency.competencyDesc || 'relevant competency').toLowerCase();
-  const piId = primaryPI.piId || 'N/A';
   
-  // Create concise alignment statement
-  reason = `CO ${coNumber} aligned with ${outcomeNumber} based on ${competencyDesc} (${piId})${syllabusReference}.`;
+  // Find relevant syllabus units if available
+  let syllabusReference = '';
+  if (syllabusData && syllabusData.units) {
+    const relevantUnits = findRelevantSyllabusContent(co.description, syllabusData);
+    if (relevantUnits.length > 0) {
+      const topUnit = relevantUnits[0].unit;
+      syllabusReference = ` as covered in Unit ${topUnit.number}`;
+    }
+  }
+  
+  // Get all PIs for the outcome to show what's available
+  const allPIsForOutcome = getAllPIs(outcomeData);
+  const allPIIds = allPIsForOutcome.map(pi => pi.piId).sort();
+  
+  // Build qualitative justification - Show list of PIs that CO aligns with
+  let qualitativeJustification = '';
+  if (piCoverageInfo && piCoverageInfo.matchedPIs && piCoverageInfo.matchedPIs.length > 0) {
+    const sortedMatchedPIs = [...piCoverageInfo.matchedPIs].sort();
+    qualitativeJustification = `Qualitative: CO aligns with the following Performance Indicators (PIs) of ${outcomeNumber}: ${sortedMatchedPIs.join(', ')}.`;
+  } else if (allMatchedPIs.length > 0) {
+    const sortedMatchedPIs = [...allMatchedPIs].sort();
+    qualitativeJustification = `Qualitative: CO aligns with the following Performance Indicators (PIs) of ${outcomeNumber}: ${sortedMatchedPIs.join(', ')}.`;
+  }
+  
+  // Build quantitative justification (PI coverage based) - PRIMARY JUSTIFICATION
+  // Show ratio of matched PIs to total PIs clearly
+  let quantitativeJustification = '';
+  if (piCoverageInfo && piCoverageInfo.totalPIs > 0) {
+    const levelDescription = piCoverageInfo.coveragePercentage > 60 ? 'High' : piCoverageInfo.coveragePercentage >= 40 ? 'Medium' : 'Low';
+    const sortedMatchedPIs = piCoverageInfo.matchedPIs ? [...piCoverageInfo.matchedPIs].sort() : allMatchedPIs.sort();
+    const sortedAllPIs = allPIIds;
+    
+    quantitativeJustification = `Quantitative (Primary): CO aligns with ${piCoverageInfo.matchedPICount} out of ${piCoverageInfo.totalPIs} PIs of ${outcomeNumber} (Ratio: ${piCoverageInfo.matchedPICount}/${piCoverageInfo.totalPIs} = ${piCoverageInfo.coveragePercentage.toFixed(1)}% coverage). Matched PIs: [${sortedMatchedPIs.join(', ')}]. Total PIs for ${outcomeNumber}: [${sortedAllPIs.join(', ')}]. This ${piCoverageInfo.coveragePercentage.toFixed(1)}% coverage determines mapping strength of ${correlationValue} (${levelDescription}) according to AICTE Examination Reform Policy.`;
+  }
+  
+  // Try to generate LLM-based justification first (for the alignment statement)
+  let alignmentStatement = '';
+  try {
+    const llmJustification = await generateLLMJustification(
+      co,
+      outcomeNumber,
+      outcomeData,
+      correlationValue,
+      matches,
+      syllabusData
+    );
+    
+    if (llmJustification) {
+      alignmentStatement = llmJustification;
+    }
+  } catch (error) {
+    console.warn(`LLM justification failed for ${co.id}-${outcomeNumber}, falling back to template:`, error.message);
+  }
+  
+  // Fallback alignment statement if LLM unavailable
+  if (!alignmentStatement) {
+    alignmentStatement = `CO ${coNumber} aligned with ${outcomeNumber} based on ${competencyDesc} addressing PIs ${piList}${syllabusReference}.`;
+  }
+  
+  // Combine all justifications - Quantitative (PRIMARY) first, then Qualitative (SECONDARY)
+  let reason = alignmentStatement;
+  
+  // Add quantitative justification first (PRIMARY)
+  if (quantitativeJustification) {
+    reason += ' ' + quantitativeJustification;
+  }
+  
+  // Add qualitative justification second (SECONDARY/VALIDATION)
+  if (qualitativeJustification) {
+    reason += ' ' + qualitativeJustification;
+  }
   
   return reason;
 }
@@ -233,20 +385,38 @@ export async function generateCOPOMatrix(courseOutcomes, syllabusData = null) {
       const matches = findMatchingCompetencies(co.description, poData);
       
       if (matches.length > 0) {
-        // Determine correlation value
-        const correlationValue = determineCorrelationValue(co.kLevel, poData.kLevel);
+        // Calculate qualitative value (K-level based)
+        const qualitativeValue = determineCorrelationValueQualitative(co.kLevel, poData.kLevel);
+        
+        // Determine correlation value using both qualitative and quantitative approaches
+        const correlationValue = determineCorrelationValue(co.kLevel, poData.kLevel, matches, poData);
         
         if (correlationValue !== null) {
           matrix[co.id][poNumber] = correlationValue;
           
-          // Generate reasoning (with syllabus data and LLM if available)
+          // Calculate PI coverage information for quantitative justification
+          const totalPIs = countTotalPIs(poData);
+          const matchedPIs = collectMatchedPIs(matches);
+          const matchedPICount = matchedPIs.length;
+          const coveragePercentage = totalPIs > 0 ? (matchedPICount / totalPIs) * 100 : 0;
+          
+          const piCoverageInfo = {
+            totalPIs: totalPIs,
+            matchedPICount: matchedPICount,
+            matchedPIs: matchedPIs,
+            coveragePercentage: coveragePercentage
+          };
+          
+          // Generate reasoning (with syllabus data, LLM, PI coverage info, and qualitative value)
           reasoning[co.id][poNumber] = await generateReasoning(
             co,
             poNumber,
             poData,
             correlationValue,
             matches,
-            syllabusData
+            syllabusData,
+            piCoverageInfo,
+            qualitativeValue
           );
         }
       }
@@ -260,20 +430,38 @@ export async function generateCOPOMatrix(courseOutcomes, syllabusData = null) {
       const matches = findMatchingCompetencies(co.description, psoData);
       
       if (matches.length > 0) {
-        // Determine correlation value
-        const correlationValue = determineCorrelationValue(co.kLevel, psoData.kLevel);
+        // Calculate qualitative value (K-level based)
+        const qualitativeValue = determineCorrelationValueQualitative(co.kLevel, psoData.kLevel);
+        
+        // Determine correlation value using both qualitative and quantitative approaches
+        const correlationValue = determineCorrelationValue(co.kLevel, psoData.kLevel, matches, psoData);
         
         if (correlationValue !== null) {
           matrix[co.id][psoNumber] = correlationValue;
           
-          // Generate reasoning (with syllabus data and LLM if available)
+          // Calculate PI coverage information for quantitative justification
+          const totalPIs = countTotalPIs(psoData);
+          const matchedPIs = collectMatchedPIs(matches);
+          const matchedPICount = matchedPIs.length;
+          const coveragePercentage = totalPIs > 0 ? (matchedPICount / totalPIs) * 100 : 0;
+          
+          const piCoverageInfo = {
+            totalPIs: totalPIs,
+            matchedPICount: matchedPICount,
+            matchedPIs: matchedPIs,
+            coveragePercentage: coveragePercentage
+          };
+          
+          // Generate reasoning (with syllabus data, LLM, PI coverage info, and qualitative value)
           reasoning[co.id][psoNumber] = await generateReasoning(
             co,
             psoNumber,
             psoData,
             correlationValue,
             matches,
-            syllabusData
+            syllabusData,
+            piCoverageInfo,
+            qualitativeValue
           );
         }
       }
