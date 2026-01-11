@@ -802,19 +802,19 @@ function App() {
                 </table>
               </div>
             <div style={{ marginTop: '30px', fontSize: '1em', color: '#b0b0b0', background: '#1f1f1f', padding: '20px', borderRadius: '10px', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-              <p style={{ marginBottom: '15px', color: '#ffffff', fontWeight: '600', fontSize: '1.1em' }}><strong>Legend:</strong></p>
+              <p style={{ marginBottom: '15px', color: '#ffffff', fontWeight: '600', fontSize: '1.1em' }}><strong>PI Coverage Legend:</strong></p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '12px', marginBottom: '20px' }}>
                 <p style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <span className="matrix-cell level-3" style={{ display: 'inline-block', padding: '8px 12px', marginRight: '0' }}>3</span>
-                  <span>High (&gt;60% PI coverage)</span>
+                  <span>High: &gt; 60% PI coverage</span>
                 </p>
                 <p style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <span className="matrix-cell level-2" style={{ display: 'inline-block', padding: '8px 12px', marginRight: '0' }}>2</span>
-                  <span>Medium (40-60% PI coverage)</span>
+                  <span>Medium: 40% – 60% PI coverage</span>
                 </p>
                 <p style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <span className="matrix-cell level-1" style={{ display: 'inline-block', padding: '8px 12px', marginRight: '0' }}>1</span>
-                  <span>Low (&lt;40% PI coverage)</span>
+                  <span>Low: &lt; 40% PI coverage</span>
                 </p>
                 <p style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                   <span className="matrix-cell blank" style={{ display: 'inline-block', padding: '8px 12px', marginRight: '0' }}>-</span>
