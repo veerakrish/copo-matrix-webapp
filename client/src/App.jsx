@@ -824,19 +824,29 @@ function App() {
               <div style={{ marginTop: '15px', padding: '15px', background: '#252525', borderRadius: '8px', borderLeft: '3px solid #667eea' }}>
                 <p style={{ marginBottom: '10px', color: '#667eea', fontWeight: '600', fontSize: '1.05em' }}><strong>Mapping Methodology (AICTE Examination Reform Policy):</strong></p>
                 <p style={{ marginBottom: '8px', lineHeight: '1.6' }}>
-                  <strong style={{ color: '#764ba2' }}>Quantitative Approach (Primary - PI Coverage Based):</strong> Mapping strength is determined by Performance Indicator (PI) coverage percentage. 
+                  <strong style={{ color: '#764ba2' }}>Quantitative Approach (Primary - PI Coverage Based):</strong> Mapping strength is determined by Performance Indicator (PI) coverage percentage using the following formula:
+                </p>
+                <div style={{ marginBottom: '12px', padding: '12px', background: 'rgba(118, 75, 162, 0.15)', borderRadius: '6px', border: '1px solid rgba(118, 75, 162, 0.3)' }}>
+                  <p style={{ margin: '0 0 8px 0', color: '#ffffff', fontSize: '1.1em', fontWeight: '600', textAlign: 'center' }}>
+                    Mapping Strength = <span style={{ color: '#764ba2' }}>(Number of PIs of a PO addressed by the CO / Total number of PIs for that PO) × 100</span>
+                  </p>
+                  <p style={{ margin: '8px 0 0 0', color: '#d0d0d0', fontSize: '0.9em', textAlign: 'center', fontStyle: 'italic' }}>
+                    Coverage Percentage = (Matched PIs / Total PIs) × 100%
+                  </p>
+                </div>
+                <p style={{ marginBottom: '8px', lineHeight: '1.6' }}>
                   The CO addresses specific PIs associated with each PO/PSO, and the coverage percentage determines the mapping level:
                   <ul style={{ marginTop: '8px', marginLeft: '20px', color: '#d0d0d0' }}>
-                    <li><strong>Level 3 (High):</strong> CO addresses &gt;60% of PIs</li>
-                    <li><strong>Level 2 (Medium):</strong> CO addresses 40-60% of PIs</li>
-                    <li><strong>Level 1 (Low):</strong> CO addresses &lt;40% of PIs</li>
+                    <li><strong>Level 3 (High):</strong> Coverage &gt;60% (e.g., 3/5 PIs = 60% → Level 2, 4/5 PIs = 80% → Level 3)</li>
+                    <li><strong>Level 2 (Medium):</strong> Coverage 40-60% (e.g., 2/5 PIs = 40% → Level 2, 3/5 PIs = 60% → Level 2)</li>
+                    <li><strong>Level 1 (Low):</strong> Coverage &lt;40% (e.g., 1/5 PIs = 20% → Level 1)</li>
                   </ul>
                 </p>
                 <p style={{ marginBottom: '8px', lineHeight: '1.6' }}>
                   <strong>Qualitative Validation (Secondary - K-Level Based):</strong> K-level compatibility ensures cognitive alignment between CO and PO/PSO requirements, used as a validation check.
                 </p>
                 <p style={{ marginTop: '10px', fontSize: '0.95em', fontStyle: 'italic', color: '#888' }}>
-                  This approach follows the new NBA pattern and AICTE Examination Reform Policy, using Performance Indicators for transparent, data-driven mapping justification. The matrix values reflect quantitative PI coverage, not K-level comparisons.
+                  This approach follows the new NBA pattern and AICTE Examination Reform Policy, using Performance Indicators for transparent, data-driven mapping justification. The matrix values reflect quantitative PI coverage calculated using the formula above, not K-level comparisons.
                 </p>
               </div>
             </div>
